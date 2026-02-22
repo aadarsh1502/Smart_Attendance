@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">Faculty Dashboard</h2>
+
+<div class="card p-3">
+    <h4>Your Subjects</h4>
+
+    {% for subject in subjects %}
+        <p>
+            <strong>{{ subject.name }}</strong>
+            <a class="btn btn-primary btn-sm ms-3"
+               href="{% url 'mark_attendance' subject.id %}">
+               Mark Attendance
+            </a>
+        </p>
+    {% empty %}
+        <p>No subjects assigned.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

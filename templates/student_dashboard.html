@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">Student Dashboard</h2>
+
+<div class="card p-3 mb-4">
+    <h4>Overall Attendance</h4>
+    <p class="fs-5">
+        {% if overall_percentage >= 75 %}
+            <span class="text-success fw-bold">
+                {{ overall_percentage }}%
+            </span>
+        {% else %}
+            <span class="text-danger fw-bold">
+                {{ overall_percentage }}%
+            </span>
+        {% endif %}
+        ({{ total_present }}/{{ total_classes }})
+    </p>
+</div>
+
+<div class="card p-3">
+    <h4>Subject-wise Attendance</h4>
+
+    {% for subject in subject_data %}
+        <p>
+            <strong>{{ subject.name }}</strong> →
+
+            {% if subject.percentage >= 75 %}
+                <span class="text-success fw-bold">
+                    {{ subject.percentage }}%
+                </span>
+            {% else %}
+                <span class="text-danger fw-bold">
+                    {{ subject.percentage }}%
+                </span>
+            {% endif %}
+
+            ({{ subject.present }}/{{ subject.total }})
+        </p>
+    {% endfor %}
+</div>
+
+{% endblock %}

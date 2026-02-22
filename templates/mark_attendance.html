@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4">Mark Attendance - {{ subject.name }}</h2>
+
+<div class="card p-3">
+
+<form method="POST">
+    {% csrf_token %}
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Present</th>
+            <th>Roll No</th>
+            <th>Name</th>
+            <th>Registration No</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+        <tr>
+            <td>
+                <input type="checkbox"
+                       name="students"
+                       value="{{ student.id }}">
+            </td>
+            <td>{{ student.roll_number }}</td>
+            <td>
+                {% if student.user.first_name %}
+                    {{ student.user.first_name }} {{ student.user.last_name }}
+                {% else %}
+                    {{ student.user.username }}
+                {% endif %}
+            </td>
+            <td>{{ student.registration_number }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+    <button type="button"
+        class="btn btn-success mt-3"
+        onclick="showSummary()">
+    Submit Attendance
+</button>
+
+</form>
+<!-- Attendance Summary Modal -->
+<div class="modal fade" id="summaryModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Attendance</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p>Total Students: <strong id="totalCount"></strong></p>
+        <p>Present: <strong id="presentCount"></strong></p>
+        <p>Absent: <strong id="absentCount"></strong></p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+                data-bs-dismiss="modal">Cancel</button>
+
+        <button type="button" class="btn btn-primary"
+                onclick="finalSubmit()">
+            Confirm & Save
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+<script>
+function showSummary() {
+    let checkboxes = document.querySelectorAll('input[name="students"]');
+    let total = checkboxes.length;
+    let present = 0;
+
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            present++;
+        }
+    });
+
+    let absent = total - present;
+
+    document.getElementById("totalCount").innerText = total;
+    document.getElementById("presentCount").innerText = present;
+    document.getElementById("absentCount").innerText = absent;
+
+    var myModal = new bootstrap.Modal(document.getElementById('summaryModal'));
+    myModal.show();
+}
+
+function finalSubmit() {
+    document.querySelector("form").submit();
+}
+</script>
+{% endblock %}
